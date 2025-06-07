@@ -1,0 +1,15 @@
+# Ghostty Terminal Configuration
+# For full documentation: https://ghostty.org/docs/config
+
+# Font configuration
+font-size = 20
+font-family = Iosevka NFM Medium
+font-family-bold = Iosevka NFM SemiBold
+font-family-italic = Iosevka NFM Medium Italic
+font-family-bold-italic =  Iosevka NFM SemiBold Italic
+
+# Appearance
+background-opacity = 0.9
+
+# Behavior
+copy-on-select = clipboard

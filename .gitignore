@@ -1,0 +1,29 @@
+# Neovim
+.config/nvim/lazy-lock.json
+.config/nvim/.luarc.json
+
+# Zsh
+.zsh_history
+.zcompdump*
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*~
+*.swp
+*.swo
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
