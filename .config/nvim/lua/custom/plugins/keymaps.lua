@@ -7,7 +7,7 @@ return {
   config = function()
     local opts = { noremap = true, silent = true }
 
-    -- Keep cursor centered when scrolling
+    -- Keep cursor centered when scrolling (disabled - conflicts with neoscroll)
     -- vim.keymap.set('n', '<C-d>', '<C-d>zz', opts)
     -- vim.keymap.set('n', '<C-u>', '<C-u>zz', opts)
 

@@ -65,10 +65,18 @@ return {
     -- enabled = false,
     config = function()
       require('neoscroll').setup {
-        stop_eof = true,
-        easing_function = 'sine',
+        -- Performance optimizations
+        mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
         hide_cursor = true,
+        stop_eof = true,
+        respect_scrolloff = false,
         cursor_scrolls_alone = true,
+        easing_function = 'quadratic', -- Faster than 'sine', smoother than 'linear'
+        pre_hook = nil,
+        post_hook = nil,
+        -- Timing optimizations for responsiveness
+        duration_multiplier = 1.0,
+        performance_mode = false, -- Set to true if still experiencing lag
       }
     end,
   },

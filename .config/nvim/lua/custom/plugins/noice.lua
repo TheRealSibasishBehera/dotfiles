@@ -58,6 +58,28 @@ return {
           },
           opts = { skip = true },
         },
+        -- Disable error notifications
+        {
+          filter = {
+            event = 'msg_show',
+            kind = 'error',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'notify',
+            kind = 'error',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'lsp',
+            kind = 'error',
+          },
+          opts = { skip = true },
+        },
       },
       -- cmdline = {
       --     view = "cmdline",

@@ -12,8 +12,10 @@ return {
   cmd = 'Neotree',
   keys = {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    { '<leader><tab>', ':Neotree float<CR>', desc = 'NeoTree float', silent = true },
   },
   opts = {
+    popup_border_style = 'rounded',
     filesystem = {
       window = {
         mappings = {
