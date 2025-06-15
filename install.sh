@@ -209,6 +209,12 @@ install_zsh() {
     install_powerlevel10k
     create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
     
+    # Install optimized p10k config if it exists
+    if [[ -f "$DOTFILES_DIR/.p10k.zsh" ]]; then
+        create_symlink "$DOTFILES_DIR/.p10k.zsh" "$HOME/.p10k.zsh"
+        print_success "Installed optimized Powerlevel10k configuration"
+    fi
+    
     # Change default shell to zsh
     if [[ "$SHELL" != "/bin/zsh" && "$SHELL" != "/usr/local/bin/zsh" ]]; then
         print_status "Changing default shell to zsh..."

@@ -65,19 +65,20 @@ return {
     -- enabled = false,
     config = function()
       require('neoscroll').setup {
-        -- Performance optimizations
-        mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
+        -- Only map less commonly used scroll commands to avoid conflicts
+        mappings = {'<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
         hide_cursor = true,
         stop_eof = true,
         respect_scrolloff = false,
         cursor_scrolls_alone = true,
-        easing_function = 'quadratic', -- Faster than 'sine', smoother than 'linear'
-        pre_hook = nil,
-        post_hook = nil,
-        -- Timing optimizations for responsiveness
-        duration_multiplier = 1.0,
-        performance_mode = false, -- Set to true if still experiencing lag
+        easing_function = 'linear', -- Fastest, most responsive
+        duration_multiplier = 0.5, -- Much faster scrolling
+        performance_mode = true, -- Enable for better performance
       }
+      
+      -- Use default vim behavior for Ctrl+U/Ctrl+D (instant, no animation)
+      vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up half page and center' })
+      vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down half page and center' })
     end,
   },
 
