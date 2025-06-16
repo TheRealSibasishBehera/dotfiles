@@ -83,7 +83,7 @@ return {
           },
         },
         default_args = {
-          DiffviewOpen = {},
+          DiffviewOpen = { '--imply-local' },
           DiffviewFileHistory = {},
         },
         hooks = {},
@@ -93,6 +93,22 @@ return {
             { 'n', '<tab>',      '<cmd>DiffviewToggleFiles<cr>',        { desc = 'Toggle file panel' } },
             { 'n', 'gf',         '<cmd>DiffviewFocusFiles<cr>',          { desc = 'Focus file panel' } },
             { 'n', 'gh',         '<cmd>DiffviewFileHistory<cr>',         { desc = 'Open file history' } },
+            -- Hunk operations
+            { 'n', '<leader>hr', '<cmd>lua require("gitsigns").reset_hunk()<cr>', { desc = 'Reset hunk' } },
+            { 'v', '<leader>hr', '<cmd>lua require("gitsigns").reset_hunk({vim.fn.line("."), vim.fn.line("v")})<cr>', { desc = 'Reset hunk selection' } },
+            { 'n', '<leader>hR', '<cmd>lua require("gitsigns").reset_buffer()<cr>', { desc = 'Reset buffer' } },
+            { 'n', '<leader>hp', '<cmd>lua require("gitsigns").preview_hunk()<cr>', { desc = 'Preview hunk' } },
+            { 'n', '<leader>hb', '<cmd>lua require("gitsigns").blame_line{full=true}<cr>', { desc = 'Blame line' } },
+            { 'n', '<leader>hd', '<cmd>lua require("gitsigns").diffthis()<cr>', { desc = 'Diff this' } },
+            { 'n', '<leader>hD', '<cmd>lua require("gitsigns").diffthis("~")<cr>', { desc = 'Diff this ~' } },
+            -- Navigation
+            { 'n', ']c', '<cmd>lua require("gitsigns").next_hunk()<cr>', { desc = 'Next hunk' } },
+            { 'n', '[c', '<cmd>lua require("gitsigns").prev_hunk()<cr>', { desc = 'Previous hunk' } },
+            -- Edit mode
+            { 'n', '<leader>he', '<cmd>diffget<cr>', { desc = 'Get change from other side' } },
+            { 'n', '<leader>ho', '<cmd>diffput<cr>', { desc = 'Put change to other side' } },
+            { 'n', 'co', '<cmd>diffget<cr>', { desc = 'Get change (obtain)' } },
+            { 'n', 'cp', '<cmd>diffput<cr>', { desc = 'Put change' } },
           },
           file_panel = {
             { 'n', 'j',             '<down>',                           { desc = 'Next entry' } },
@@ -124,8 +140,8 @@ return {
       map('n', '<leader>gl', '<cmd>Neogit log<cr>', 'Git [l]og')
       
       -- Diffview commands for VS Code-like side-by-side diffs
-      map('n', '<leader>gd', '<cmd>DiffviewOpen<cr>', 'Git [d]iff current changes')
-      map('n', '<leader>gD', '<cmd>DiffviewOpen HEAD~1<cr>', 'Git [D]iff vs last commit')
+      map('n', '<leader>gd', '<cmd>DiffviewOpen --imply-local<cr>', 'Git [d]iff current changes')
+      map('n', '<leader>gD', '<cmd>DiffviewOpen HEAD~1 --imply-local<cr>', 'Git [D]iff vs last commit')
       map('n', '<leader>gh', '<cmd>DiffviewFileHistory %<cr>', 'Git file [h]istory')
       map('n', '<leader>gH', '<cmd>DiffviewFileHistory<cr>', 'Git [H]istory all files')
       map('n', '<leader>gr', '<cmd>DiffviewOpen origin/main...HEAD<cr>', 'Git [r]eview changes vs main')

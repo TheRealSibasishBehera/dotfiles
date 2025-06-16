@@ -49,6 +49,30 @@ return {
 
     -- Add a keymap for the tab version
     vim.api.nvim_set_keymap('n', '<leader>lgt', '<cmd>LazyGitTab<CR>', { noremap = true, silent = true, desc = 'LazyGit (Tab)' })
+
+    -- Auto-close all toggleterm terminals before :wqall or session save
+    local function close_all_terminals()
+      local terms = require('toggleterm.terminal').get_all()
+      for _, term in pairs(terms) do
+        if term:is_open() then
+          term:close()
+        end
+      end
+    end
+
+    -- Create autocommands for various session-saving scenarios
+    vim.api.nvim_create_autocmd('VimLeavePre', {
+      group = vim.api.nvim_create_augroup('ToggletermAutoClose', { clear = true }),
+      callback = function()
+        close_all_terminals()
+      end,
+      desc = 'Close all toggleterm terminals before exit'
+    })
+
+    -- Also create a command to manually close all terminals
+    vim.api.nvim_create_user_command('CloseAllTerminals', close_all_terminals, {
+      desc = 'Close all toggleterm terminals'
+    })
   end,
 }
 

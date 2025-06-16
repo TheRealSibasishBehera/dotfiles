@@ -80,6 +80,28 @@ return {
           },
           opts = { skip = true },
         },
+        -- Disable warning notifications
+        {
+          filter = {
+            event = 'msg_show',
+            kind = 'warn',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'notify',
+            kind = 'warn',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'lsp',
+            kind = 'warn',
+          },
+          opts = { skip = true },
+        },
       },
       -- cmdline = {
       --     view = "cmdline",
