@@ -1,6 +1,6 @@
 return {
   -- Plugin specifications for scope/folding
-  --[[  {
+  {
     'kevinhwang91/nvim-ufo',
     dependencies = {
       'kevinhwang91/promise-async',
@@ -53,8 +53,8 @@ return {
       vim.opt.fillchars:append {
         foldsep = '│', -- Vertical line between fold levels
         fold = ' ', -- Character used for the fold indicator
-        foldopen = '', -- Character used for open folds
-        foldclose = '', -- Character used for closed folds
+        foldopen = '-', -- Character used for open folds
+        foldclose = '+', -- Character used for closed folds
       }
     end,
     config = function(_, opts)
@@ -83,7 +83,8 @@ return {
     end,
   },
 
-  -- Pretty fold display
+  -- Pretty fold display (disabled due to compatibility issues)
+  --[[
   {
     'anuvyklack/pretty-fold.nvim',
     event = 'BufReadPost',
@@ -133,6 +134,7 @@ return {
       })
     end,
   },
+  --]]
 
   -- Preview folded text
   {
@@ -168,5 +170,4 @@ return {
       end, { desc = 'Toggle fold preview' })
     end,
    },
-  ]]
 }
