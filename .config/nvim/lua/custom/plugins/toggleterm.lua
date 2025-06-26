@@ -44,7 +44,7 @@ return {
     -- Simple keymaps for numbered terminals (works with your <C-t> workflow)
     -- <C-t> opens terminal 1 (your default)
     -- 2<C-t> opens terminal 2, 3<C-t> opens terminal 3, etc.
-    vim.keymap.set('n', '<leader>lgt', function() lazygit_term:toggle() end, { desc = 'LazyGit (Tab)' })
+    vim.keymap.set('n', '<leader>gt', function() lazygit_term:toggle() end, { desc = 'LazyGit (Tab)' })
     
     -- Add terminal selector for when you have many terminals open
     vim.keymap.set('n', '<leader>tt', '<cmd>TermSelect<cr>', { desc = 'Terminal Select' })
