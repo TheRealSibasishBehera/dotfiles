@@ -170,6 +170,37 @@ return {
     'tpope/vim-sleuth',
   },
 
+  -- Markdown preview in browser (using Deno - works with modern Node.js)
+  {
+    'toppair/peek.nvim',
+    event = { 'VeryLazy' },
+    build = 'deno task --quiet build:fast',
+    config = function()
+      require('peek').setup({
+        auto_load = true,
+        close_on_bdelete = true,
+        syntax = true,
+        theme = 'dark',
+        update_on_change = true,
+        app = 'browser', -- Use browser instead of webview
+        filetype = { 'markdown' },
+        throttle_at = 200000,
+        throttle_time = 'auto',
+      })
+      
+      -- Keymaps
+      vim.keymap.set('n', '<leader>mp', function() require('peek').open() end, { desc = 'Markdown Preview Open' })
+      vim.keymap.set('n', '<leader>ms', function() require('peek').close() end, { desc = 'Markdown Preview Close' })
+      vim.keymap.set('n', '<leader>mt', function() 
+        if require('peek').is_open() then
+          require('peek').close()
+        else
+          require('peek').open()
+        end
+      end, { desc = 'Markdown Preview Toggle' })
+    end,
+  },
+
   {
     {
       'folke/lazydev.nvim',
