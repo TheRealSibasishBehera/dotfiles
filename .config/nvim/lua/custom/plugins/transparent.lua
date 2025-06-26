@@ -1,5 +1,6 @@
 return {
   'xiyaowong/transparent.nvim',
+  enabled = false, -- DISABLED: Transparent plugin
   lazy = false, -- Load immediately to avoid conflicts
   priority = 1000, -- High priority to load before colorschemes
   keys = {

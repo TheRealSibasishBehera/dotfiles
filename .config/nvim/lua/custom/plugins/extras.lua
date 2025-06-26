@@ -85,7 +85,7 @@ return {
   -- find and replace
   {
     'windwp/nvim-spectre',
-    enabled = false,
+    enabled = true,
     event = 'BufRead',
     keys = {
       {
@@ -110,6 +110,59 @@ return {
         desc = 'Replace Buffer',
       },
     },
+    config = function()
+      require('spectre').setup({
+        replace_engine = {
+          ['sed'] = {
+            cmd = "sed",
+            args = {
+              "-i",
+              "",
+              "-E",
+            },
+          },
+        },
+        default = {
+          find = {
+            cmd = "rg",
+            options = {"--color=never", "--no-heading", "--with-filename", "--line-number", "--column"},
+          },
+          replace = {
+            cmd = "sed"
+          }
+        },
+      })
+      
+      -- Quick replace current word in file
+      vim.keymap.set('n', '<leader>rw', function()
+        local word = vim.fn.expand('<cword>')
+        if word == '' then
+          print('No word under cursor')
+          return
+        end
+        -- Escape special regex characters
+        word = vim.fn.escape(word, '/\\')
+        -- Start substitute with confirmation
+        vim.api.nvim_feedkeys(':%s/\\<' .. word .. '\\>/', 'n', false)
+      end, { desc = 'Replace current word in file' })
+      
+      -- Quick replace current word globally 
+      vim.keymap.set('n', '<leader>rW', function()
+        require('spectre').open_visual({ select_word = true })
+      end, { desc = 'Replace current word globally' })
+      
+      -- Replace all occurrences without confirmation
+      vim.keymap.set('n', '<leader>ra', function()
+        local word = vim.fn.expand('<cword>')
+        if word == '' then
+          print('No word under cursor')
+          return
+        end
+        word = vim.fn.escape(word, '/\\')
+        vim.api.nvim_feedkeys(':%s/\\<' .. word .. '\\>/', 'n', false)
+        vim.api.nvim_feedkeys('g', 'n', false)
+      end, { desc = 'Replace all occurrences of current word' })
+    end,
   },
 
   -- Heuristically set buffer options

@@ -27,28 +27,27 @@ return {
       },
     }
 
-    -- Create a persistent Lazygit terminal in a tab
+    -- Keep your existing Lazygit terminal
     local Terminal = require('toggleterm.terminal').Terminal
     local lazygit_term = Terminal:new {
       cmd = 'lazygit',
       dir = 'git_dir',
-      direction = 'tab', -- This will open in a tab instead of float
-      hidden = true, -- Keeps it persistent
+      direction = 'tab',
+      hidden = true,
       on_open = function(term)
         vim.cmd 'startinsert!'
-        -- Set the tab title for easy identification
         vim.opt_local.title = true
         vim.opt_local.titlestring = 'Lazygit'
       end,
     }
 
-    -- Create a command to toggle the Lazygit tab terminal
-    vim.api.nvim_create_user_command('LazyGitTab', function()
-      lazygit_term:toggle()
-    end, {})
-
-    -- Add a keymap for the tab version
-    vim.api.nvim_set_keymap('n', '<leader>lgt', '<cmd>LazyGitTab<CR>', { noremap = true, silent = true, desc = 'LazyGit (Tab)' })
+    -- Simple keymaps for numbered terminals (works with your <C-t> workflow)
+    -- <C-t> opens terminal 1 (your default)
+    -- 2<C-t> opens terminal 2, 3<C-t> opens terminal 3, etc.
+    vim.keymap.set('n', '<leader>lgt', function() lazygit_term:toggle() end, { desc = 'LazyGit (Tab)' })
+    
+    -- Add terminal selector for when you have many terminals open
+    vim.keymap.set('n', '<leader>tt', '<cmd>TermSelect<cr>', { desc = 'Terminal Select' })
 
     -- Auto-close all toggleterm terminals before :wqall or session save
     local function close_all_terminals()
@@ -68,6 +67,11 @@ return {
       end,
       desc = 'Close all toggleterm terminals before exit'
     })
+
+    -- Create a command to toggle the Lazygit tab terminal
+    vim.api.nvim_create_user_command('LazyGitTab', function()
+      lazygit_term:toggle()
+    end, {})
 
     -- Also create a command to manually close all terminals
     vim.api.nvim_create_user_command('CloseAllTerminals', close_all_terminals, {

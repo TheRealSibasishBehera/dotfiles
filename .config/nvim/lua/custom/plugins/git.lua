@@ -1,34 +1,18 @@
 return {
+  -- Vim Fugitive for editable diffs
   {
-    'NeogitOrg/neogit',
+    'tpope/vim-fugitive',
+    cmd = { 'Git', 'Gread', 'Gwrite', 'Gvdiffsplit' },
+  },
+  
+  {
+    'sindrets/diffview.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',         -- required
-      'sindrets/diffview.nvim',        -- optional - enhanced diffs
       'nvim-telescope/telescope.nvim', -- optional
+      'tpope/vim-fugitive',            -- for editable diffs
     },
     config = function()
-      local neogit = require('neogit')
-      
-      neogit.setup({
-        -- Use telescope for selection lists
-        use_telescope = true,
-        -- Integration with diffview for better diff experience
-        integrations = {
-          telescope = true,
-          diffview = true,
-        },
-        -- Show diff in same window (VS Code-like)
-        commit_editor = {
-          kind = 'vsplit',
-        },
-        -- Enhanced diff display
-        signs = {
-          hunk = { '', '' },
-          item = { '>', 'v' },
-          section = { '>', 'v' },
-        },
-      })
-
       -- Configure diffview for side-by-side comparison
       require('diffview').setup({
         diff_binaries = false,
@@ -40,6 +24,8 @@ return {
         view = {
           default = {
             layout = 'diff2_horizontal', -- Side-by-side like VS Code
+            winbar_info = true,
+            disable_diagnostics = false,
           },
           merge_tool = {
             layout = 'diff3_horizontal',
@@ -83,16 +69,33 @@ return {
           },
         },
         default_args = {
-          DiffviewOpen = { '--imply-local' },
+          DiffviewOpen = { "--imply-local" },
           DiffviewFileHistory = {},
         },
-        hooks = {},
+        hooks = {
+          diff_buf_read = function(bufnr)
+            -- Make sure we can edit the working tree files
+            vim.api.nvim_buf_set_option(bufnr, 'modifiable', true)
+            vim.api.nvim_buf_set_option(bufnr, 'readonly', false)
+          end,
+        },
         keymaps = {
           disable_defaults = false,
           view = {
             { 'n', '<tab>',      '<cmd>DiffviewToggleFiles<cr>',        { desc = 'Toggle file panel' } },
             { 'n', 'gf',         '<cmd>DiffviewFocusFiles<cr>',          { desc = 'Focus file panel' } },
             { 'n', 'gh',         '<cmd>DiffviewFileHistory<cr>',         { desc = 'Open file history' } },
+            { 'n', 'ge',         function() 
+                local file = vim.fn.expand('%')
+                vim.cmd('DiffviewClose')
+                vim.cmd('edit ' .. file)
+              end, { desc = 'Edit current file' } },
+            -- Hunk staging operations (much easier than manual copying)
+            { 'n', 's',          '<cmd>lua require("gitsigns").stage_hunk()<cr>',     { desc = 'Stage hunk' } },
+            { 'v', 's',          '<cmd>lua require("gitsigns").stage_hunk({vim.fn.line("."), vim.fn.line("v")})<cr>', { desc = 'Stage selection' } },
+            { 'n', 'u',          '<cmd>lua require("gitsigns").undo_stage_hunk()<cr>', { desc = 'Unstage hunk' } },
+            { 'n', 'S',          '<cmd>lua require("gitsigns").stage_buffer()<cr>',   { desc = 'Stage entire file' } },
+            { 'n', 'U',          '<cmd>lua require("gitsigns").reset_buffer_index()<cr>', { desc = 'Unstage entire file' } },
             -- Hunk operations
             { 'n', '<leader>hr', '<cmd>lua require("gitsigns").reset_hunk()<cr>', { desc = 'Reset hunk' } },
             { 'v', '<leader>hr', '<cmd>lua require("gitsigns").reset_hunk({vim.fn.line("."), vim.fn.line("v")})<cr>', { desc = 'Reset hunk selection' } },
@@ -133,28 +136,107 @@ return {
         vim.keymap.set(mode, lhs, rhs, { desc = desc })
       end
 
-      -- Core Neogit commands
-      map('n', '<leader>gs', '<cmd>Neogit<cr>', 'Git [s]tatus (Neogit)')
-      map('n', '<leader>gc', '<cmd>Neogit commit<cr>', 'Git [c]ommit')
-      map('n', '<leader>gp', '<cmd>Neogit push<cr>', 'Git [p]ush')
-      map('n', '<leader>gl', '<cmd>Neogit log<cr>', 'Git [l]og')
+      -- Toggle Git status - open if closed, close if open
+      map('n', '<leader>gg', function()
+        -- Check if there's a fugitive buffer open
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          local buf = vim.api.nvim_win_get_buf(win)
+          local buftype = vim.api.nvim_buf_get_option(buf, 'filetype')
+          if buftype == 'fugitive' then
+            -- Close the fugitive window
+            vim.api.nvim_win_close(win, false)
+            return
+          end
+        end
+        -- No fugitive window found, open Git status
+        vim.cmd('Git')
+      end, 'Git (toggle)')
       
-      -- Diffview commands for VS Code-like side-by-side diffs
-      map('n', '<leader>gd', '<cmd>DiffviewOpen --imply-local<cr>', 'Git [d]iff current changes')
-      map('n', '<leader>gD', '<cmd>DiffviewOpen HEAD~1 --imply-local<cr>', 'Git [D]iff vs last commit')
-      map('n', '<leader>gh', '<cmd>DiffviewFileHistory %<cr>', 'Git file [h]istory')
-      map('n', '<leader>gH', '<cmd>DiffviewFileHistory<cr>', 'Git [H]istory all files')
-      map('n', '<leader>gr', '<cmd>DiffviewOpen origin/main...HEAD<cr>', 'Git [r]eview changes vs main')
-      map('n', '<leader>gv', '<cmd>DiffviewClose<cr>', 'Close diff [v]iew')
+      -- Open git diff split for current file
+      map('n', '<leader>ge', function()
+        local file = vim.fn.expand('%')
+        if file == '' then
+          print('No file to diff')
+          return
+        end
+        vim.cmd('Gvdiffsplit!')
+      end, 'Git diff split (edit)')
       
-      -- Quick file operations
-      map('n', '<leader>ga', '<cmd>Neogit<cr>', 'Git [a]dd (via status)')
-      map('n', '<leader>gb', function()
-        vim.cmd('Neogit')
-        vim.defer_fn(function()
-          vim.cmd('normal! b') -- Navigate to blame in Neogit
-        end, 100)
-      end, 'Git [b]lame')
+      -- Cycle through changed files in diff mode
+      map('n', '<leader>gn', function()
+        -- Get list of changed files
+        local changed_files = vim.fn.systemlist('git diff --name-only HEAD')
+        if #changed_files == 0 then
+          print('No changed files')
+          return
+        end
+        
+        local current_file = vim.fn.expand('%:.')
+        local current_index = 1
+        
+        -- Find current file in the list
+        for i, file in ipairs(changed_files) do
+          if file == current_file then
+            current_index = i
+            break
+          end
+        end
+        
+        -- Get next file (wrap around)
+        local next_index = current_index % #changed_files + 1
+        local next_file = changed_files[next_index]
+        
+        -- Close current diff and open next file diff
+        vim.cmd('only')
+        vim.cmd('edit ' .. next_file)
+        vim.cmd('Gvdiffsplit!')
+      end, 'Git [n]ext changed file')
+      
+      map('n', '<leader>gp', function()
+        -- Get list of changed files
+        local changed_files = vim.fn.systemlist('git diff --name-only HEAD')
+        if #changed_files == 0 then
+          print('No changed files')
+          return
+        end
+        
+        local current_file = vim.fn.expand('%:.')
+        local current_index = 1
+        
+        -- Find current file in the list
+        for i, file in ipairs(changed_files) do
+          if file == current_file then
+            current_index = i
+            break
+          end
+        end
+        
+        -- Get previous file (wrap around)
+        local prev_index = current_index == 1 and #changed_files or current_index - 1
+        local prev_file = changed_files[prev_index]
+        
+        -- Close current diff and open previous file diff
+        vim.cmd('only')
+        vim.cmd('edit ' .. prev_file)
+        vim.cmd('Gvdiffsplit!')
+      end, 'Git [p]revious changed file')
+      
+      -- Quit git diff splits
+      map('n', '<leader>gw', '<cmd>only<cr>', 'Git quit diff (close splits)')
+      
+      -- Hunk operations (when in diff view) - using ]c/[c for navigation
+      vim.keymap.set('n', ']c', ']c', { desc = 'Next diff hunk' })
+      vim.keymap.set('n', '[c', '[c', { desc = 'Previous diff hunk' })
+      
+      -- Diff editing operations (only in diff buffers)
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'fugitive',
+        callback = function()
+          local opts = { buffer = true }
+          vim.keymap.set('n', 'do', '<cmd>diffget<cr>', vim.tbl_extend('force', opts, { desc = 'Diff obtain (get)' }))
+          vim.keymap.set('n', 'dp', '<cmd>diffput<cr>', vim.tbl_extend('force', opts, { desc = 'Diff put' }))
+        end,
+      })
     end,
   },
 }
