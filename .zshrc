@@ -121,7 +121,7 @@ source $ZSH/oh-my-zsh.sh
 alias gcloud="/Users/sibasish/Downloads/google-cloud-sdk/bin/gcloud"
 alias vi="nvim"
 alias k="kubectl"
-
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 #powerlevel10k theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
