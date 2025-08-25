@@ -10,6 +10,9 @@ return {
   },
   config = function()
     require('transparent').setup({
+    -- Transparency level control (affects which groups become transparent)
+    auto = false,        -- Disable auto transparency on colorscheme change
+    enable = true,       -- Enable transparency by default when plugin loads
     groups = {
       'Normal',
       'NormalNC',

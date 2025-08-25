@@ -82,7 +82,9 @@ return {
     end,
   },
 
-  -- find and replace
+
+  -- find and replace (COMMENTED OUT - replaced with quicksub.nvim)
+  --[[
   {
     'windwp/nvim-spectre',
     enabled = true,
@@ -164,6 +166,7 @@ return {
       end, { desc = 'Replace all occurrences of current word' })
     end,
   },
+  --]]
 
   -- Heuristically set buffer options
   {

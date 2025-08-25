@@ -207,7 +207,7 @@
 
   ##################################[ dir: current directory ]##################################
   # Default current directory color - ELECTRIC BRIGHT CYAN
-  typeset -g POWERLEVEL9K_DIR_FOREGROUND=51
+  typeset -g POWERLEVEL9K_DIR_FOREGROUND=81
   # Make directory bold and punchy
   typeset -g POWERLEVEL9K_DIR_BOLD=true
   # If directory is too long, shorten some of its segments to the shortest possible unique

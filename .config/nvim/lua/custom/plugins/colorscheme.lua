@@ -7,12 +7,12 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      require("github-theme").setup({
+      require('github-theme').setup {
         options = {
           transparent = false, -- Solid background
-        }
-      })
-      -- vim.cmd 'colorscheme github_dark_default'
+        },
+      }
+      -- vim.cmd 'colorscheme github_dark'
     end,
   },
 
@@ -24,8 +24,8 @@ return {
         transparent = false, -- Solid background
         styles = {
           comments = { italic = false },
-          sidebars = "dark",
-          floats = "dark",
+          sidebars = 'dark',
+          floats = 'dark',
         },
       }
       -- vim.cmd.colorscheme 'tokyonight-night'
@@ -38,7 +38,7 @@ return {
     name = 'catppuccin',
     priority = 1000,
     config = function()
-      require('catppuccin').setup({
+      require('catppuccin').setup {
         flavour = 'mocha', -- latte, frappe, macchiato, mocha
         transparent_background = false,
         no_italic = true,
@@ -54,7 +54,7 @@ return {
           notify = true,
           mini = true,
         },
-      })
+      }
       -- vim.cmd.colorscheme 'catppuccin'
     end,
   },
@@ -65,15 +65,15 @@ return {
     name = 'rose-pine',
     priority = 1000,
     config = function()
-      require('rose-pine').setup({
+      require('rose-pine').setup {
         variant = 'moon', -- auto, main, moon, or dawn
-        disable_background = false, -- Solid background
-        disable_float_background = false,
+        disable_background = false, -- Disable transparency
+        disable_float_background = false, -- Solid float backgrounds
         styles = {
           italic = false,
-          transparency = false,
+          transparency = false, -- Disable transparency
         },
-      })
+      }
       -- vim.cmd.colorscheme 'rose-pine'
     end,
   },
@@ -96,7 +96,7 @@ return {
     'rebelot/kanagawa.nvim',
     priority = 1000,
     config = function()
-      require('kanagawa').setup({
+      require('kanagawa').setup {
         compile = false,
         undercurl = true,
         commentStyle = { italic = false },
@@ -107,13 +107,13 @@ return {
         transparent = false,
         dimInactive = false,
         terminalColors = true,
-        theme = "dragon", -- Set dragon as default
+        theme = 'wave', -- Set wave as default
         background = {
-          dark = "dragon",
-          light = "lotus"
+          dark = 'wave',
+          light = 'lotus',
         },
-      })
-      vim.cmd.colorscheme 'kanagawa-dragon'
+      }
+      vim.cmd.colorscheme 'kanagawa-wave'
     end,
   },
 
@@ -122,23 +122,23 @@ return {
     'EdenEast/nightfox.nvim',
     priority = 1000,
     config = function()
-      require('nightfox').setup({
+      require('nightfox').setup {
         options = {
           transparent = false,
           styles = {
-            comments = "NONE",
-            conditionals = "NONE",
-            constants = "NONE",
-            functions = "NONE",
-            keywords = "NONE",
-            numbers = "NONE",
-            operators = "NONE",
-            strings = "NONE",
-            types = "NONE",
-            variables = "NONE",
+            comments = 'NONE',
+            conditionals = 'NONE',
+            constants = 'NONE',
+            functions = 'NONE',
+            keywords = 'NONE',
+            numbers = 'NONE',
+            operators = 'NONE',
+            strings = 'NONE',
+            types = 'NONE',
+            variables = 'NONE',
           },
         },
-      })
+      }
       -- Variants: nightfox, dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
       -- vim.cmd.colorscheme 'carbonfox'
     end,
@@ -149,11 +149,11 @@ return {
     'Mofiqul/vscode.nvim',
     priority = 1000,
     config = function()
-      require('vscode').setup({
+      require('vscode').setup {
         transparent = false,
         italic_comments = false,
         disable_nvimtree_bg = true,
-      })
+      }
       -- vim.cmd.colorscheme 'vscode'
     end,
   },
@@ -163,7 +163,7 @@ return {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
     config = function()
-      require('gruvbox').setup({
+      require('gruvbox').setup {
         terminal_colors = true,
         undercurl = true,
         underline = true,
@@ -181,12 +181,12 @@ return {
         invert_tabline = false,
         invert_intend_guides = false,
         inverse = true,
-        contrast = "hard", -- can be "hard", "soft" or empty string
+        contrast = 'hard', -- can be "hard", "soft" or empty string
         palette_overrides = {},
         overrides = {},
         dim_inactive = false,
         transparent_mode = false,
-      })
+      }
       -- vim.cmd.colorscheme 'gruvbox'
     end,
   },

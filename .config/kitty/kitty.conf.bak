@@ -1,0 +1,11 @@
+font_size 20.0
+
+font_family Iosevka NFM Medium
+bold_font Iosevka NFM SemiBold
+italic_font Iosevka NFM Medium Italic
+bold_italic_font Iosevka NFM SemiBold Italic
+
+background_opacity 0.9
+
+copy_to_clipboard on_selection
+

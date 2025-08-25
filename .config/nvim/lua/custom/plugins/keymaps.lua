@@ -83,6 +83,14 @@ return {
 
     -- Clear search highlights
     vim.keymap.set('n', '<Esc>', ':nohlsearch<CR>', opts)
+
+    -- Strip trailing whitespace
+    vim.keymap.set('n', '<leader>tw', [[:%s/\s\+$//e<CR>]], { desc = 'Trim trailing whitespace (whole file)', silent = true })
+    vim.keymap.set('n', '<leader>tl', [[:s/\s\+$//e<CR>]], { desc = 'Trim trailing whitespace (current line)', silent = true })
+
+    -- Go to definition in split
+    vim.keymap.set('n', 'gD', '<cmd>vsplit | lua vim.lsp.buf.definition()<CR>', { desc = 'Go to definition in vertical split' })
+    vim.keymap.set('n', 'gS', '<cmd>split | lua vim.lsp.buf.definition()<CR>', { desc = 'Go to definition in horizontal split' })
   end,
   event = 'VeryLazy',
 }

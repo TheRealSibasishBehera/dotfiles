@@ -1,5 +1,6 @@
 return {
   'akinsho/bufferline.nvim',
+  enabled = false, -- Disable bufferline top bar
   version = '*',
   dependencies = 'nvim-tree/nvim-web-devicons',
   config = function()

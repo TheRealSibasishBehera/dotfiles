@@ -27,7 +27,9 @@ return {
       -- Set to false to use the default fillchars from Neovim
       open_fold_hl_timeout = 150,
       -- Maximum number of folds that will be displayed in a single screen line
-      close_fold_kinds = { 'imports', 'comment' },
+      close_fold_kinds_for_ft = {
+        default = { 'imports', 'comment' },
+      },
       preview = {
         win_config = {
           border = 'rounded',

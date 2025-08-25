@@ -6,6 +6,7 @@ return {
   {
     'lewis6991/gitsigns.nvim',
     opts = {
+      show_hunk = false, -- Disable "hunk 1 of 2" messages
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
 

@@ -1,3 +1,16 @@
+-- Commented out in favor of kickstart's debug configuration
+-- This custom debug setup was disabled to use the more widely tested kickstart debug configuration
+-- The kickstart debug setup is located in lua/kickstart/plugins/debug.lua
+-- 
+-- Key differences:
+-- - Kickstart uses F1-F3 for stepping (vs F10-F12 here)
+-- - Kickstart uses <leader>b for breakpoints (vs <leader>db here)
+-- - Kickstart has simpler, more standard keymaps
+--
+-- To re-enable this configuration, uncomment the code below and comment out
+-- the debug plugin in init.lua
+
+--[[
 return {
   -- Debug Adapter Protocol
   {
@@ -162,3 +175,7 @@ return {
     end,
   },
 }
+--]]
+
+-- Return empty table since this configuration is disabled
+return {}

@@ -1,3 +1,8 @@
+-- Commented out to disable treesitter textobjects
+-- This plugin provides text objects for functions, classes, parameters, etc.
+-- To re-enable, uncomment the code below
+
+--[[
 return {
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
@@ -109,3 +114,7 @@ return {
     end,
   },
 }
+--]]
+
+-- Return empty table since this configuration is disabled
+return {}

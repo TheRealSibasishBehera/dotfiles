@@ -168,6 +168,12 @@ vim.opt.scrolloff = 10
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
+-- Better wrapped line handling
+vim.opt.wrap = false         -- Disable line wrapping
+vim.opt.linebreak = true     -- Wrap at word boundaries, not mid-word (when wrap is enabled)
+vim.opt.breakindent = true   -- Maintain indentation on wrapped lines (when wrap is enabled)
+vim.opt.showbreak = '↪ '     -- Visual indicator for wrapped lines (when wrap is enabled)
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
