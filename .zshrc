@@ -155,7 +155,7 @@ setopt inc_append_history
 setopt hist_ignore_dups 
 setopt hist_ignore_space
 
-plugins=(vi-mode kubectl zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
+plugins=(git vi-mode kubectl zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
 # civo auto-completion
 source <(civo completion zsh)
 
