@@ -15,5 +15,4 @@ background-opacity = 0.9
 copy-on-select = clipboard
 
 # macOS Voice Control compatibility
-macos-secure-keyboard-entry = false
 macos-non-native-fullscreen = false
