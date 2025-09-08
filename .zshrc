@@ -2,6 +2,9 @@ zmodload zsh/zprof
 autoload -Uz compinit
 compinit
 
+# jj (Jujutsu) completion
+source <(jj util completion zsh)
+
 
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -116,12 +119,14 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
- alias civo="civo --config ~/.civo_staging.json"
+alias civo="civo --config ~/.civo_staging.json"
 #alias civo="/Users/sibasish/cli/civo --config ~/.civo_staging.json"
 alias gcloud="/Users/sibasish/Downloads/google-cloud-sdk/bin/gcloud"
 alias vi="nvim"
 alias k="kubectl"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+alias ex="exit"
+
 #powerlevel10k theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -130,7 +135,6 @@ alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
 export PATH=$(go env GOPATH)/bin:$PATH
 export PATH="/Applications/GoLand.app/Contents/MacOS:$PATH"
-
 export GOPATH=/Users/sibasish/go
 export PATH="/opt/homebrew/bin:$PATH"
 
@@ -155,7 +159,9 @@ setopt inc_append_history
 setopt hist_ignore_dups 
 setopt hist_ignore_space
 
+# plugins 
 plugins=(git vi-mode kubectl zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
+
 # civo auto-completion
 source <(civo completion zsh)
 
@@ -194,6 +200,9 @@ export NVM_DIR="$HOME/.nvm"
 
 export EDITOR="nvim"
 export VISUAL="nvim"
+
+# Fix GPG signing for jj and git
+export GPG_TTY=$(tty)
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export PATH="/Library/TeX/texbin:$PATH"
 export PATH="$HOME/.docker/bin:$PATH"
