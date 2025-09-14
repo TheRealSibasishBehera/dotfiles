@@ -86,7 +86,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git jj vi-mode kubectl zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
+plugins=(git jj vi-mode kubectl rust zsh-autosuggestions zsh-autocomplete zsh-syntax-highlighting)
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 source $ZSH/oh-my-zsh.sh
@@ -128,8 +128,7 @@ alias k="kubectl"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias ex="exit"
 alias cl="clear"
-alias jjcs="jj commit --no-verify"  # Since you have sign-all enabled, use this to commit without signing
-alias jjcms="jj commit --message"  # Regular commit with message (will be signed based on your config)
+alias jjll="jj log --limit"
 
 #powerlevel10k theme
 
