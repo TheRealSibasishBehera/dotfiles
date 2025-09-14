@@ -86,6 +86,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+plugins=(git jj vi-mode kubectl zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 source $ZSH/oh-my-zsh.sh
@@ -126,6 +127,7 @@ alias vi="nvim"
 alias k="kubectl"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias ex="exit"
+alias cl="clear"
 
 #powerlevel10k theme
 
@@ -159,8 +161,7 @@ setopt inc_append_history
 setopt hist_ignore_dups 
 setopt hist_ignore_space
 
-# plugins 
-plugins=(git vi-mode kubectl zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
+# plugins line moved to correct location before sourcing oh-my-zsh
 
 # civo auto-completion
 source <(civo completion zsh)
