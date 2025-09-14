@@ -128,6 +128,8 @@ alias k="kubectl"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias ex="exit"
 alias cl="clear"
+alias jjcs="jj commit --no-verify"  # Since you have sign-all enabled, use this to commit without signing
+alias jjcms="jj commit --message"  # Regular commit with message (will be signed based on your config)
 
 #powerlevel10k theme
 
