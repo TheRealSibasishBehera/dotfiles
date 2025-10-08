@@ -2,8 +2,8 @@ zmodload zsh/zprof
 autoload -Uz compinit
 compinit
 
-# jj (Jujutsu) completion
-source <(jj util completion zsh)
+# jj (Jujutsu) completion (if installed)
+command -v jj &> /dev/null && source <(jj util completion zsh)
 
 
 
@@ -120,15 +120,15 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias civo="civo --config ~/.civo_staging.json"
-#alias civo="/Users/sibasish/cli/civo --config ~/.civo_staging.json"
-alias gcloud="/Users/sibasish/Downloads/google-cloud-sdk/bin/gcloud"
 alias vi="nvim"
 alias k="kubectl"
-alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias ex="exit"
 alias cl="clear"
 alias jjll="jj log --limit"
+alias cursor="~/Applications/cursor/cursor.AppImage"
+
+# civo CLI (if installed)
+command -v civo &> /dev/null && alias civo="civo --config ~/.civo_staging.json"
 
 #powerlevel10k theme
 
@@ -136,10 +136,24 @@ alias jjll="jj log --limit"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 
-export PATH=$(go env GOPATH)/bin:$PATH
-export PATH="/Applications/GoLand.app/Contents/MacOS:$PATH"
-export GOPATH=/Users/sibasish/go
-export PATH="/opt/homebrew/bin:$PATH"
+# Go environment
+if command -v go &> /dev/null; then
+    export PATH=$(go env GOPATH)/bin:$PATH
+    export GOPATH=$(go env GOPATH)
+fi
+
+# Local bin paths
+export PATH="$HOME/.local/bin:$PATH"
+
+# Rust/Cargo
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Keyboard remapping: Caps→Escape, Ctrl→Super, Alt→Ctrl, Super→Alt
+if [[ "$XDG_SESSION_TYPE" == "wayland" ]] && command -v gsettings &> /dev/null; then
+    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape', 'altwin:ctrl_alt_win']"
+elif [[ -n "$DISPLAY" ]] && command -v setxkbmap &> /dev/null; then
+    setxkbmap -option caps:escape -option altwin:ctrl_alt_win
+fi
 
 #history setup 
 HISTFILE=$HOME/.zhistory
@@ -153,8 +167,30 @@ setopt hist_verify
 # completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Source zsh plugins (try multiple possible locations)
+# Fedora/RHEL locations
+if [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+if [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# Debian/Ubuntu locations
+if [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+if [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# Homebrew location (macOS)
+if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 
 # share tmux history 
@@ -164,12 +200,14 @@ setopt hist_ignore_space
 
 # plugins line moved to correct location before sourcing oh-my-zsh
 
-# civo auto-completion
-source <(civo completion zsh)
+# civo auto-completion (if installed)
+command -v civo &> /dev/null && source <(civo completion zsh)
 
 
 # Load fzf keybindings (Ctrl+R fuzzy history, Ctrl+T file fuzzy finder, etc.)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
+    source /usr/share/fzf/shell/key-bindings.zsh
+fi
 
 # Ensure vi-mode and Ctrl+R work together
 bindkey -v
@@ -194,20 +232,24 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-[ -f "/Users/sibasish/.ghcup/env" ] && . "/Users/sibasish/.ghcup/env" # ghcup-env
+# ghcup environment (Haskell)
+[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env"
+
+# NVM (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf (already sourced above, keeping this for compatibility)
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Editor
 export EDITOR="nvim"
 export VISUAL="nvim"
 
 # Fix GPG signing for jj and git
 export GPG_TTY=$(tty)
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export PATH="/Library/TeX/texbin:$PATH"
-export PATH="$HOME/.docker/bin:$PATH"
-alias docker="$HOME/.docker/bin/docker"
-alias docker-compose="$HOME/.docker/bin/docker-compose"
-export PATH="/Library/TeX/texbin:$PATH"
+
+# Docker (if using Docker Desktop or colima)
+if [[ -d "$HOME/.docker/bin" ]]; then
+    export PATH="$HOME/.docker/bin:$PATH"
+fi

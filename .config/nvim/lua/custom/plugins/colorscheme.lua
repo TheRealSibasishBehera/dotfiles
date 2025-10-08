@@ -12,7 +12,7 @@ return {
           transparent = false, -- Solid background
         },
       }
-      -- vim.cmd 'colorscheme github_dark'
+      vim.cmd 'colorscheme github_dark_colorblind'
     end,
   },
 
@@ -113,7 +113,7 @@ return {
           light = 'lotus',
         },
       }
-      vim.cmd.colorscheme 'kanagawa-wave'
+      -- vim.cmd.colorscheme 'kanagawa-wave'
     end,
   },
 

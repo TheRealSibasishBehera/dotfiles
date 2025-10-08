@@ -1,0 +1,8 @@
+#:schema https://jj-vcs.github.io/jj/latest/config-schema.json
+
+[user]
+name = "Sibasish Behera"
+email = "fangedhamster3114@gmail.com"
+
+[ui]
+paginate = "never"

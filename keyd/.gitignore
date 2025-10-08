@@ -1,0 +1,12 @@
+*.swp
+*.swn
+*.swo
+*.out
+tags
+bin/
+*.o
+*.gch
+__pycache__
+test.log
+keyd.service
+keyd/data/unicode.txt
