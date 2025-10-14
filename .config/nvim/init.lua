@@ -93,6 +93,9 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Ensure Go is in PATH for LSP and tools
+vim.env.PATH = vim.env.HOME .. '/.local/go/bin:' .. vim.env.HOME .. '/go/bin:' .. vim.env.PATH
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -169,10 +172,10 @@ vim.opt.scrolloff = 10
 vim.opt.confirm = true
 
 -- Better wrapped line handling
-vim.opt.wrap = false         -- Disable line wrapping
-vim.opt.linebreak = true     -- Wrap at word boundaries, not mid-word (when wrap is enabled)
-vim.opt.breakindent = true   -- Maintain indentation on wrapped lines (when wrap is enabled)
-vim.opt.showbreak = '↪ '     -- Visual indicator for wrapped lines (when wrap is enabled)
+vim.opt.wrap = false -- Disable line wrapping
+vim.opt.linebreak = true -- Wrap at word boundaries, not mid-word (when wrap is enabled)
+vim.opt.breakindent = true -- Maintain indentation on wrapped lines (when wrap is enabled)
+vim.opt.showbreak = '↪ ' -- Visual indicator for wrapped lines (when wrap is enabled)
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -226,6 +229,68 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- [[ Configure rustaceanvim before plugins load ]]
+-- This MUST be set before lazy.nvim loads
+vim.g.rustaceanvim = {
+  -- LSP configuration
+  server = {
+    on_attach = function(client, bufnr)
+      -- Inlay hints disabled by default due to occasional rendering errors
+      -- Enable manually with :lua vim.lsp.inlay_hint.enable(true)
+      -- if client.server_capabilities.inlayHintProvider then
+      --   vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      -- end
+    end,
+    default_settings = {
+      -- rust-analyzer language server configuration
+      ['rust-analyzer'] = {
+        cargo = {
+          allFeatures = true,
+          loadOutDirsFromCheck = true,
+          runBuildScripts = true,
+          buildScripts = {
+            enable = true,
+          },
+        },
+        -- Enable check on save with clippy
+        checkOnSave = {
+          command = 'clippy',
+        },
+        procMacro = {
+          enable = true,
+          ignored = {
+            ['async-trait'] = { 'async_trait' },
+            ['napi-derive'] = { 'napi' },
+            ['async-recursion'] = { 'async_recursion' },
+          },
+        },
+      },
+    },
+  },
+  -- DAP configuration
+  dap = {
+    adapter = function()
+      local codelldb_path = vim.fn.stdpath 'data' .. '/mason/packages/codelldb/extension/adapter/codelldb'
+      local liblldb_path = vim.fn.stdpath 'data' .. '/mason/packages/codelldb/extension/lldb/lib/liblldb.so'
+
+      -- Check if codelldb exists, otherwise use default auto detection
+      if vim.fn.filereadable(codelldb_path) == 1 then
+        return require('rustaceanvim.config').get_codelldb_adapter(codelldb_path, liblldb_path)
+      else
+        -- Fallback to auto-detection
+        return {
+          type = 'server',
+          port = '${port}',
+          executable = {
+            command = 'codelldb',
+            args = { '--port', '${port}' },
+          },
+        }
+      end
+    end,
+  },
+}
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -292,41 +357,44 @@ require('lazy').setup({
   { -- Smooth scrolling plugin
     'karb94/neoscroll.nvim',
     config = function()
-      require('neoscroll').setup({
+      require('neoscroll').setup {
         -- All these keys will be mapped to their corresponding default scrolling animation
-        mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
-                    '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
-        hide_cursor = true,          -- Hide cursor while scrolling
-        stop_eof = true,             -- Stop at <EOF> when scrolling downwards
-        respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+        mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb' },
+        hide_cursor = true, -- Hide cursor while scrolling
+        stop_eof = true, -- Stop at <EOF> when scrolling downwards
+        respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
         cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-        easing_function = nil,       -- Default easing function
-        pre_hook = nil,              -- Function to run before the scrolling animation starts
-        post_hook = nil,             -- Function to run after the scrolling animation ends
-        performance_mode = false,    -- Disable "Performance Mode" on all buffers.
-      })
+        easing_function = nil, -- Default easing function
+        pre_hook = nil, -- Function to run before the scrolling animation starts
+        post_hook = nil, -- Function to run after the scrolling animation ends
+        performance_mode = false, -- Disable "Performance Mode" on all buffers.
+      }
 
       -- Set custom scroll animation timings (in ms)
       local t = {}
       -- Syntax: t[keys] = {function, {function arguments}}
-      t['<C-u>'] = {'scroll', {'-vim.wo.scroll', 'true', '250'}}
-      t['<C-d>'] = {'scroll', { 'vim.wo.scroll', 'true', '250'}}
-      t['<C-b>'] = {'scroll', {'-vim.api.nvim_win_get_height(0)', 'true', '450'}}
-      t['<C-f>'] = {'scroll', { 'vim.api.nvim_win_get_height(0)', 'true', '450'}}
-      t['<C-y>'] = {'scroll', {'-3', 'false', '100'}}
-      t['<C-e>'] = {'scroll', { '3', 'false', '100'}}
-      t['zt']    = {'zt', {'250'}}
-      t['zz']    = {'zz', {'250'}}
-      t['zb']    = {'zb', {'250'}}
+      t['<C-u>'] = { 'scroll', { '-vim.wo.scroll', 'true', '250' } }
+      t['<C-d>'] = { 'scroll', { 'vim.wo.scroll', 'true', '250' } }
+      t['<C-b>'] = { 'scroll', { '-vim.api.nvim_win_get_height(0)', 'true', '450' } }
+      t['<C-f>'] = { 'scroll', { 'vim.api.nvim_win_get_height(0)', 'true', '450' } }
+      t['<C-y>'] = { 'scroll', { '-3', 'false', '100' } }
+      t['<C-e>'] = { 'scroll', { '3', 'false', '100' } }
+      t['zt'] = { 'zt', { '250' } }
+      t['zz'] = { 'zz', { '250' } }
+      t['zb'] = { 'zb', { '250' } }
 
       require('neoscroll.config').set_mappings(t)
-    end
+    end,
   },
 
   { -- Claude Code AI assistant integration
     'coder/claudecode.nvim',
     dependencies = { 'folke/snacks.nvim' },
-    config = true,
+    config = function()
+      require('claudecode').setup {
+        terminal_cmd = 'claude --dangerously-skip-permissions',
+      }
+    end,
     keys = {
       { '<leader>cc', '<cmd>ClaudeCode<cr>', desc = '[C]laude [C]ode Toggle' },
       { '<leader>cf', '<cmd>ClaudeCodeFocus<cr>', desc = '[C]laude [F]ocus' },
@@ -334,7 +402,7 @@ require('lazy').setup({
       { '<leader>ca', '<cmd>ClaudeCodeAdd %<cr>', desc = '[C]laude [A]dd Current File' },
       { '<leader>cd', '<cmd>ClaudeCodeDiffAccept<cr>', desc = '[C]laude [D]iff Accept' },
       { '<leader>cr', '<cmd>ClaudeCodeDiffDeny<cr>', desc = '[C]laude Diff [R]eject' },
-    }
+    },
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -543,7 +611,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    lazy = true, -- Ensure it's loaded immediately
+    lazy = false, -- Ensure it's loaded immediately
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -768,6 +836,8 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'rust-analyzer',
+        'codelldb',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

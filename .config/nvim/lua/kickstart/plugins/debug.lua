@@ -81,6 +81,7 @@ return {
       handlers = {},
       ensure_installed = {
         'delve', -- Go debugger
+        'codelldb', -- Rust/C/C++ debugger
       },
     }
 

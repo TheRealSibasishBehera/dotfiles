@@ -126,6 +126,7 @@ alias ex="exit"
 alias cl="clear"
 alias jjll="jj log --limit"
 alias cursor="~/Applications/cursor/cursor.AppImage"
+alias claude="/usr/local/bin/claude --dangerously-skip-permissions"
 
 # civo CLI (if installed)
 command -v civo &> /dev/null && alias civo="civo --config ~/.civo_staging.json"
@@ -137,6 +138,7 @@ command -v civo &> /dev/null && alias civo="civo --config ~/.civo_staging.json"
 
 
 # Go environment
+export PATH="$HOME/.local/go/bin:$PATH"
 if command -v go &> /dev/null; then
     export PATH=$(go env GOPATH)/bin:$PATH
     export GOPATH=$(go env GOPATH)
@@ -253,3 +255,20 @@ export GPG_TTY=$(tty)
 if [[ -d "$HOME/.docker/bin" ]]; then
     export PATH="$HOME/.docker/bin:$PATH"
 fi
+
+# jj commit with automatic sign-off
+jj-signoff() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: jj-signoff 'commit message'"
+        return 1
+    fi
+    
+    local msg="$1"
+    local signoff="Signed-off-by: $(git config user.name) <$(git config user.email)>"
+    jj describe -m "$msg
+
+$signoff"
+}
+
+# Alias for convenience
+alias jjc='jj-signoff'

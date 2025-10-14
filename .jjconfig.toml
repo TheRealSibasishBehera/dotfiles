@@ -1,0 +1,31 @@
+# Jujutsu VCS Configuration
+
+[user]
+name = "Sibasish Behera"
+email = "fangedhamster3114@gmail.com"
+
+[ui]
+# Default editor (uses system EDITOR env var if not set)
+# editor = "nvim"
+
+# Show diffs in color
+color = "auto"
+
+# Paginate output
+paginate = "never"
+
+[signing]
+# GPG signing for all commits
+behavior = "own"
+backend = "gpg"
+key = "B67541E9FD719229"
+
+[aliases]
+# Common aliases
+l = ["log"]
+ll = ["log", "-r", "::@"]
+s = ["status"]
+d = ["diff"]
+
+[templates]
+commit_trailers = '''format_signed_off_by_trailer(self)'''

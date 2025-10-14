@@ -11,6 +11,7 @@ INSTALL_TMUX=false
 INSTALL_NVIM=false
 INSTALL_KITTY=false
 INSTALL_ZSH=false
+INSTALL_JJ=false
 SKIP_DEPS=false
 
 # Colors for output
@@ -43,6 +44,11 @@ while [[ $# -gt 0 ]]; do
             INSTALL_ZSH=true
             shift
             ;;
+        --jj)
+            INSTALL_ALL=false
+            INSTALL_JJ=true
+            shift
+            ;;
         --skip-deps)
             SKIP_DEPS=true
             shift
@@ -55,6 +61,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --nvim      Install only neovim configuration"
             echo "  --kitty     Install only kitty configuration"
             echo "  --zsh       Install only zsh configuration"
+            echo "  --jj        Install only jujutsu configuration"
             echo "  --skip-deps Skip dependency installation"
             echo "  -h, --help  Show this help message"
             echo ""
@@ -285,6 +292,15 @@ install_zsh() {
     print_warning "Restart your terminal and run 'p10k configure' if you want to customize your prompt"
 }
 
+install_jj() {
+    print_status "Installing Jujutsu (jj) configuration..."
+    if [[ -f "$DOTFILES_DIR/.jjconfig.toml" ]]; then
+        create_symlink "$DOTFILES_DIR/.jjconfig.toml" "$HOME/.jjconfig.toml"
+    else
+        print_warning "No .jjconfig.toml found in dotfiles"
+    fi
+}
+
 # Main installation
 main() {
     echo ""
@@ -317,6 +333,10 @@ main() {
 
     if [[ "$INSTALL_ALL" == true || "$INSTALL_ZSH" == true ]]; then
         install_zsh
+    fi
+
+    if [[ "$INSTALL_ALL" == true || "$INSTALL_JJ" == true ]]; then
+        install_jj
     fi
 
     echo ""
