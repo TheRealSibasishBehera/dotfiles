@@ -46,10 +46,10 @@ return {
     vim.keymap.set('n', '<leader>w', ':w<CR>:bd<CR>', { noremap = true, silent = true })
 
     -- Panes resizing
-    vim.keymap.set('n', '+', ':vertical resize +5<CR>')
-    vim.keymap.set('n', '_', ':vertical resize -5<CR>')
-    vim.keymap.set('n', '=', ':resize +5<CR>')
-    vim.keymap.set('n', '-', ':resize -5<CR>')
+    vim.keymap.set('n', '<C-Right>', ':vertical resize +5<CR>', opts)
+    vim.keymap.set('n', '<C-Left>', ':vertical resize -5<CR>', opts)
+    vim.keymap.set('n', '<C-Up>', ':resize +5<CR>', opts)
+    vim.keymap.set('n', '<C-Down>', ':resize -5<CR>', opts)
 
     -- Map enter to ciw in normal mode
     vim.keymap.set('n', '<CR>', 'ciw', opts)
