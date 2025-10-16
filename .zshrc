@@ -150,6 +150,10 @@ export PATH="$HOME/.local/bin:$PATH"
 # Rust/Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# Deno
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
 # Keyboard remapping: Caps→Escape, Ctrl→Super, Alt→Ctrl, Super→Alt
 if [[ "$XDG_SESSION_TYPE" == "wayland" ]] && command -v gsettings &> /dev/null; then
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape', 'altwin:ctrl_alt_win']"
@@ -272,3 +276,4 @@ $signoff"
 
 # Alias for convenience
 alias jjc='jj-signoff'
+. "/home/void/.deno/env"
