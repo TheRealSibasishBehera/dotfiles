@@ -274,6 +274,7 @@ jj-signoff() {
 $signoff"
 }
 
-# Alias for convenience
-alias jjc='jj-signoff'
 . "/home/void/.deno/env"
+
+# Add Firecracker tools to PATH
+export PATH="$HOME/bin:$PATH"

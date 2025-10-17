@@ -390,6 +390,10 @@ require('lazy').setup({
   { -- Claude Code AI assistant integration
     'coder/claudecode.nvim',
     dependencies = { 'folke/snacks.nvim' },
+    opts = {
+      focus_after_send = true,
+      track_selection = true,
+    },
     config = function()
       require('claudecode').setup {
         terminal_cmd = 'claude --dangerously-skip-permissions',
@@ -540,12 +544,12 @@ require('lazy').setup({
         defaults = {
           mappings = {
             i = {
-              ['<C-l>'] = 'select_vertical',  -- Open in vertical split
-              ['<C-v>'] = false,              -- Disable default <C-v>
+              ['<C-l>'] = 'select_vertical', -- Open in vertical split
+              ['<C-v>'] = false, -- Disable default <C-v>
             },
             n = {
-              ['<C-l>'] = 'select_vertical',  -- Open in vertical split
-              ['<C-v>'] = false,              -- Disable default <C-v>
+              ['<C-l>'] = 'select_vertical', -- Open in vertical split
+              ['<C-v>'] = false, -- Disable default <C-v>
             },
           },
         },
@@ -853,7 +857,14 @@ require('lazy').setup({
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+
+            -- Use new vim.lsp.config API for Neovim 0.11+, fallback to lspconfig for 0.10
+            if vim.fn.has('nvim-0.11') == 1 then
+              vim.lsp.config[server_name] = server
+              vim.lsp.enable(server_name)
+            else
+              require('lspconfig')[server_name].setup(server)
+            end
           end,
           -- Prevent rust_analyzer from being set up by mason-lspconfig
           ['rust_analyzer'] = function() end,
@@ -978,7 +989,7 @@ require('lazy').setup({
       },
 
       completion = {
-        menu = { auto_show = true },  -- Automatically show completion menu
+        menu = { auto_show = true }, -- Automatically show completion menu
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
