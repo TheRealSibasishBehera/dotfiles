@@ -32,6 +32,7 @@ backup_file "$HOME/.tmux.conf" "$BACKUP_DIR/.tmux.conf"
 backup_file "$HOME/.zshrc" "$BACKUP_DIR/.zshrc"
 backup_file "$HOME/.config/nvim" "$BACKUP_DIR/.config/nvim"
 backup_file "$HOME/.config/ghostty" "$BACKUP_DIR/.config/ghostty"
+backup_file "$HOME/.config/kitty" "$BACKUP_DIR/.config/kitty"
 
 # Additional zsh files
 backup_file "$HOME/.zshenv" "$BACKUP_DIR/.zshenv"
@@ -45,3 +46,4 @@ echo "  cp -r $BACKUP_DIR/.tmux.conf ~/.tmux.conf"
 echo "  cp -r $BACKUP_DIR/.zshrc ~/.zshrc"
 echo "  cp -r $BACKUP_DIR/.config/nvim ~/.config/nvim"
 echo "  cp -r $BACKUP_DIR/.config/ghostty ~/.config/ghostty"
+echo "  cp -r $BACKUP_DIR/.config/kitty ~/.config/kitty"

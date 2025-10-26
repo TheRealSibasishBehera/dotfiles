@@ -24,6 +24,9 @@ install-nvim: ## Install only neovim configuration
 install-ghostty: ## Install only ghostty configuration
 	@./install.sh --ghostty
 
+install-kitty: ## Install only kitty configuration
+	@./install.sh --kitty
+
 install-zsh: ## Install only zsh configuration
 	@./install.sh --zsh
 

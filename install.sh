@@ -10,6 +10,7 @@ INSTALL_ALL=true
 INSTALL_TMUX=false
 INSTALL_NVIM=false
 INSTALL_GHOSTTY=false
+INSTALL_KITTY=false
 INSTALL_ZSH=false
 SKIP_DEPS=false
 
@@ -38,6 +39,11 @@ while [[ $# -gt 0 ]]; do
             INSTALL_GHOSTTY=true
             shift
             ;;
+        --kitty)
+            INSTALL_ALL=false
+            INSTALL_KITTY=true
+            shift
+            ;;
         --zsh)
             INSTALL_ALL=false
             INSTALL_ZSH=true
@@ -54,6 +60,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --tmux      Install only tmux configuration"
             echo "  --nvim      Install only neovim configuration"
             echo "  --ghostty   Install only ghostty configuration"
+            echo "  --kitty     Install only kitty configuration"
             echo "  --zsh       Install only zsh configuration"
             echo "  --skip-deps Skip dependency installation"
             echo "  -h, --help  Show this help message"
@@ -120,17 +127,26 @@ install_dependencies() {
         ripgrep \
         fd \
         git \
+        jj \
+        go \
+        deno \
+        yarn \
+        kitty \
         zsh-autosuggestions \
         zsh-syntax-highlighting
     
+    # Install fonts
+    print_status "Installing fonts..."
+    brew install --cask font-iosevka-term-nerd-font
+
     # Install Ghostty if not present (it's a newer terminal)
     if ! command -v ghostty &> /dev/null; then
         print_warning "Ghostty not found. Please install from: https://ghostty.org/"
     fi
-    
+
     # Install fzf shell integration
     $(brew --prefix)/opt/fzf/install --all
-    
+
     print_success "Dependencies installed"
 }
 
@@ -203,10 +219,40 @@ install_ghostty() {
     create_symlink "$DOTFILES_DIR/.config/ghostty" "$HOME/.config/ghostty"
 }
 
+install_kitty() {
+    print_status "Installing Kitty configuration..."
+    create_symlink "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
+}
+
 install_zsh() {
     print_status "Installing Zsh configuration..."
     install_oh_my_zsh
     install_powerlevel10k
+
+    # Install oh-my-zsh custom plugins
+    local zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+    if [[ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]]; then
+        print_status "Installing zsh-autosuggestions plugin..."
+        git clone https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions"
+    else
+        print_success "zsh-autosuggestions plugin already installed"
+    fi
+
+    if [[ ! -d "$zsh_custom/plugins/zsh-autocomplete" ]]; then
+        print_status "Installing zsh-autocomplete plugin..."
+        git clone https://github.com/marlonrichert/zsh-autocomplete "$zsh_custom/plugins/zsh-autocomplete"
+    else
+        print_success "zsh-autocomplete plugin already installed"
+    fi
+
+    if [[ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]]; then
+        print_status "Installing zsh-syntax-highlighting plugin..."
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting"
+    else
+        print_success "zsh-syntax-highlighting plugin already installed"
+    fi
+
     create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
     
     # Install optimized p10k config if it exists
@@ -253,7 +299,11 @@ main() {
     if [[ "$INSTALL_ALL" == true || "$INSTALL_GHOSTTY" == true ]]; then
         install_ghostty
     fi
-    
+
+    if [[ "$INSTALL_ALL" == true || "$INSTALL_KITTY" == true ]]; then
+        install_kitty
+    fi
+
     if [[ "$INSTALL_ALL" == true || "$INSTALL_ZSH" == true ]]; then
         install_zsh
     fi

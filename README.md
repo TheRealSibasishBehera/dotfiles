@@ -7,6 +7,7 @@ My personal development environment configuration files for macOS.
 - **Neovim**: Kickstart-based configuration with custom plugins
 - **Tmux**: Terminal multiplexer with vim-style navigation and Dracula theme
 - **Ghostty**: Terminal emulator with custom font settings
+- **Kitty**: Terminal emulator with IosevkaTerm Nerd Font and custom settings
 - **Zsh**: Shell configuration with Oh My Zsh, Powerlevel10k, and useful plugins
 
 ## Quick Installation
@@ -32,6 +33,7 @@ If you prefer to install components individually:
 ./install.sh --tmux
 ./install.sh --nvim
 ./install.sh --ghostty
+./install.sh --kitty
 ./install.sh --zsh
 ```
 
@@ -63,6 +65,13 @@ The installation script will handle installing most dependencies automatically.
 - Custom Iosevka font
 - Semi-transparent background
 - Copy on select
+
+### Kitty
+- IosevkaTerm Nerd Font Mono (size 20)
+- Semi-transparent background (0.9 opacity)
+- Copy on select enabled
+- Vim-style optimizations
+- Powerline tab bar
 
 ### Zsh
 - Oh My Zsh framework

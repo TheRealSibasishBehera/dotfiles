@@ -120,9 +120,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias civo="civo --config ~/.civo_staging.json"
-#alias civo="/Users/sibasish/cli/civo --config ~/.civo_staging.json"
-alias gcloud="/Users/sibasish/Downloads/google-cloud-sdk/bin/gcloud"
+alias gcloud="$HOME/Downloads/google-cloud-sdk/bin/gcloud"
 alias vi="nvim"
 alias k="kubectl"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
@@ -138,7 +136,7 @@ alias jjll="jj log --limit"
 
 export PATH=$(go env GOPATH)/bin:$PATH
 export PATH="/Applications/GoLand.app/Contents/MacOS:$PATH"
-export GOPATH=/Users/sibasish/go
+export GOPATH=$HOME/go
 export PATH="/opt/homebrew/bin:$PATH"
 
 #history setup 
@@ -163,10 +161,6 @@ setopt hist_ignore_dups
 setopt hist_ignore_space
 
 # plugins line moved to correct location before sourcing oh-my-zsh
-
-# civo auto-completion
-source <(civo completion zsh)
-
 
 # Load fzf keybindings (Ctrl+R fuzzy history, Ctrl+T file fuzzy finder, etc.)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -194,7 +188,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-[ -f "/Users/sibasish/.ghcup/env" ] && . "/Users/sibasish/.ghcup/env" # ghcup-env
+[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
