@@ -18,8 +18,8 @@ return {
       vim.keymap.set('n', '<leader>m4', function() harpoon:list():select(4) end, { desc = 'Harpoon file [4]' })
 
       -- Toggle previous & next buffers stored within Harpoon list
-      vim.keymap.set('n', '<leader>mp', function() harpoon:list():prev() end, { desc = 'Harpoon [P]revious' })
-      vim.keymap.set('n', '<leader>mn', function() harpoon:list():next() end, { desc = 'Harpoon [N]ext' })
+      vim.keymap.set('n', '<leader>m[', function() harpoon:list():prev() end, { desc = 'Harpoon [P]revious' })
+      vim.keymap.set('n', '<leader>m]', function() harpoon:list():next() end, { desc = 'Harpoon [N]ext' })
 
       -- Alternative quick access with Ctrl+number (common pattern)
       vim.keymap.set('n', '<C-1>', function() harpoon:list():select(1) end, { desc = 'Harpoon file 1' })

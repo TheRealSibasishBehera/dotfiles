@@ -127,6 +127,17 @@ alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias ex="exit"
 alias cl="clear"
 alias jjll="jj log --limit"
+# Sync functions for remote machine
+# Examples:
+#   sync myproject    - syncs local-machine:/home/void/programming/myproject to ~/programming/
+#   syncr myproject   - syncs ~/programming/myproject to local-machine:/home/void/programming/
+sync() {
+  rsync -avz local-machine:/home/void/programming/"$1" ~/programming/
+}
+
+syncr() {
+  rsync -avz ~/programming/"$1" local-machine:/home/void/programming/
+}
 
 #powerlevel10k theme
 
@@ -201,7 +212,4 @@ export VISUAL="nvim"
 export GPG_TTY=$(tty)
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export PATH="/Library/TeX/texbin:$PATH"
-export PATH="$HOME/.docker/bin:$PATH"
-alias docker="$HOME/.docker/bin/docker"
-alias docker-compose="$HOME/.docker/bin/docker-compose"
-export PATH="/Library/TeX/texbin:$PATH"
+autoload -U compinit; compinit

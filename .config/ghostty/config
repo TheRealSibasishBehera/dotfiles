@@ -9,7 +9,7 @@ font-family-italic = Iosevka NFM Medium Italic
 font-family-bold-italic =  Iosevka NFM SemiBold Italic
 
 # Appearance
-background-opacity = 0.9
+background-opacity = 1.0
 
 # Behavior
 copy-on-select = clipboard

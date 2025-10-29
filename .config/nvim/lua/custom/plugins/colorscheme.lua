@@ -113,7 +113,7 @@ return {
           light = 'lotus',
         },
       }
-      vim.cmd.colorscheme 'kanagawa-wave'
+      -- vim.cmd.colorscheme 'kanagawa-wave'
     end,
   },
 
@@ -214,6 +214,16 @@ return {
       vim.g.sonokai_disable_italic_comment = 1
       vim.g.sonokai_better_performance = 1
       -- vim.cmd.colorscheme 'sonokai'
+    end,
+  },
+
+  -- Set Neovim's built-in default colorscheme
+  {
+    'default-colorscheme',
+    priority = 1000,
+    dir = vim.fn.stdpath 'config', -- Dummy directory
+    config = function()
+      vim.cmd.colorscheme 'default'
     end,
   },
 }
