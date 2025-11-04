@@ -10,7 +10,7 @@ email = "fangedhamster3114@gmail.com"
 color = "auto"
 
 # Paginate output
-paginate = "auto"
+paginate = "never"
 
 [signing]
 # GPG signing for all commits

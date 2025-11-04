@@ -239,6 +239,68 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- [[ Configure rustaceanvim before plugins load ]]
+-- This MUST be set before lazy.nvim loads
+vim.g.rustaceanvim = {
+  -- LSP configuration
+  server = {
+    on_attach = function(client, bufnr)
+      -- Inlay hints disabled by default due to occasional rendering errors
+      -- Enable manually with :lua vim.lsp.inlay_hint.enable(true)
+      -- if client.server_capabilities.inlayHintProvider then
+      --   vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      -- end
+    end,
+    default_settings = {
+      -- rust-analyzer language server configuration
+      ['rust-analyzer'] = {
+        cargo = {
+          allFeatures = true,
+          loadOutDirsFromCheck = true,
+          runBuildScripts = true,
+          buildScripts = {
+            enable = true,
+          },
+        },
+        -- Add clippy lints for Rust
+        checkOnSave = {
+          command = 'clippy',
+        },
+        procMacro = {
+          enable = true,
+          ignored = {
+            ['async-trait'] = { 'async_trait' },
+            ['napi-derive'] = { 'napi' },
+            ['async-recursion'] = { 'async_recursion' },
+          },
+        },
+      },
+    },
+  },
+  -- DAP configuration
+  dap = {
+    adapter = function()
+      local codelldb_path = vim.fn.stdpath 'data' .. '/mason/packages/codelldb/extension/adapter/codelldb'
+      local liblldb_path = vim.fn.stdpath 'data' .. '/mason/packages/codelldb/extension/lldb/lib/liblldb.so'
+
+      -- Check if codelldb exists, otherwise use default auto detection
+      if vim.fn.filereadable(codelldb_path) == 1 then
+        return require('rustaceanvim.config').get_codelldb_adapter(codelldb_path, liblldb_path)
+      else
+        -- Fallback to auto-detection
+        return {
+          type = 'server',
+          port = '${port}',
+          executable = {
+            command = 'codelldb',
+            args = { '--port', '${port}' },
+          },
+        }
+      end
+    end,
+  },
+}
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
