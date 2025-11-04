@@ -2,55 +2,70 @@ return {
   {
     'Saecki/crates.nvim',
     event = { 'BufRead Cargo.toml' },
-    opts = {
-      completion = {
-        crates = {
-          enabled = true,
+    config = function()
+      require('crates').setup {
+        completion = {
+          crates = {
+            enabled = true,
+          },
         },
-      },
-      lsp = {
-        enabled = true,
-        actions = true,
-        completion = true,
-        hover = true,
-      },
-    },
+        lsp = {
+          enabled = true,
+          actions = true,
+          completion = true,
+          hover = true,
+        },
+      }
+    end,
   },
   {
     'mrcjkb/rustaceanvim',
-    version = '^6', -- Recommended
-    -- config = function()
-    --   vim.g.rustaceanvim = {
-    --     -- Set rustaceanvim's specific settings to match your preferences
-    --     tools = {
-    --       hover_actions = {
-    --         auto_focus = true,
-    --       },
-    --       inlay_hints = {
-    --         show_parameter_hints = true,
-    --       },
-    --       -- This is the important part:
-    --       diagnostic = {
-    --         virtual_text = false,
-    --         signs = true,
-    --         underline = true,
-    --       },
-    --     },
-    --   }
-    --   -- Also hook into rustaceanvim's internal setup
-    --   vim.api.nvim_create_autocmd('BufEnter', {
-    --     pattern = '*.rs',
-    --     callback = function()
-    --       -- Force diagnostic settings for Rust files
-    --       vim.diagnostic.config {
-    --         virtual_text = false,
-    --         -- other settings...
-    --       }
-    --     end,
-    --     group = vim.api.nvim_create_augroup('RustDiagnosticSettings', { clear = true }),
-    --   })
-    -- end,
-    lazy = false, -- This plugin is already lazy
+    version = '^5', -- Recommended
+    ft = { 'rust' }, -- Load on Rust files
+    config = function()
+      vim.g.rustaceanvim = {
+        -- Plugin configuration
+        tools = {
+          hover_actions = {
+            auto_focus = true,
+          },
+        },
+        -- LSP configuration
+        server = {
+          on_attach = function(client, bufnr)
+            -- Set up keybindings and other LSP-specific settings
+            vim.keymap.set('n', '<leader>ca', function()
+              vim.cmd.RustLsp 'codeAction'
+            end, { desc = 'Code Action', buffer = bufnr })
+            vim.keymap.set('n', '<leader>dr', function()
+              vim.cmd.RustLsp 'debuggables'
+            end, { desc = 'Rust Debuggables', buffer = bufnr })
+          end,
+          default_settings = {
+            -- rust-analyzer language server configuration
+            ['rust-analyzer'] = {
+              cargo = {
+                allFeatures = true,
+                loadOutDirsFromCheck = true,
+                buildScripts = {
+                  enable = true,
+                },
+              },
+              -- Add clippy lints for Rust
+              checkOnSave = true,
+              procMacro = {
+                enable = true,
+                ignored = {
+                  ['async-trait'] = { 'async_trait' },
+                  ['napi-derive'] = { 'napi' },
+                  ['async-recursion'] = { 'async_recursion' },
+                },
+              },
+            },
+          },
+        },
+      }
+    end,
   },
   -- {
   --   'neovim/nvim-lspconfig',
