@@ -120,7 +120,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias gcloud="$HOME/Downloads/google-cloud-sdk/bin/gcloud"
 alias vi="nvim"
 alias k="kubectl"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
@@ -207,6 +206,10 @@ export NVM_DIR="$HOME/.nvm"
 
 export EDITOR="nvim"
 export VISUAL="nvim"
+
+# gcloud CLI completion and path
+source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
+source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
 
 # Fix GPG signing for jj and git
 export GPG_TTY=$(tty)
