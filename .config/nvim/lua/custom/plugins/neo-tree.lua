@@ -11,22 +11,32 @@ return {
   },
   cmd = 'Neotree',
   keys = {
-    { '\\', function()
-        require('neo-tree.command').execute({ 
+    {
+      '\\',
+      function()
+        require('neo-tree.command').execute {
           action = 'focus',
           source = 'filesystem',
           position = 'left',
           reveal = true,
-        })
-      end, desc = 'NeoTree sidebar', silent = true },
-    { '<leader>\\', function()
-        require('neo-tree.command').execute({ 
+        }
+      end,
+      desc = 'NeoTree sidebar',
+      silent = true,
+    },
+    {
+      '<leader>\\',
+      function()
+        require('neo-tree.command').execute {
           action = 'focus',
           source = 'filesystem',
           position = 'float',
           reveal = true,
-        })
-      end, desc = 'NeoTree float', silent = true },
+        }
+      end,
+      desc = 'NeoTree float',
+      silent = true,
+    },
   },
   opts = {
     popup_border_style = 'rounded',
@@ -35,27 +45,14 @@ return {
     enable_diagnostics = true,
     filesystem = {
       filtered_items = {
-        visible = false, -- when true, they will just be displayed differently than normal items
+        visible = true, -- when true, they will just be displayed differently than normal items
         hide_dotfiles = false,
-        hide_gitignored = true,
+        hide_gitignored = false,
         hide_hidden = false, -- only works on Windows for hidden files/directories
-        hide_by_name = {
-          -- '.git',
-          -- '.DS_Store',
-          -- 'thumbs.db'
-        },
-        hide_by_pattern = { -- uses glob style patterns
-          -- '*.meta',
-          -- '*/src/*/tsconfig.json',
-        },
-        always_show = { -- remains visible even if other settings would normally hide it
-          '.gitignore',
-          '.env',
-        },
-        never_show = { -- remains hidden even if visible is toggled or other settings would show it
-          '.DS_Store',
-          'thumbs.db'
-        },
+        hide_by_name = {},
+        hide_by_pattern = {},
+        always_show = {},
+        never_show = {},
       },
       follow_current_file = {
         enabled = false, -- This will find and focus the file in the active buffer every time

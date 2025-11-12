@@ -171,5 +171,5 @@ return {
         require('fold-preview').toggle_preview()
       end, { desc = 'Toggle fold preview' })
     end,
-   },
+  },
 }

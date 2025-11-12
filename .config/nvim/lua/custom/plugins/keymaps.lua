@@ -7,10 +7,6 @@ return {
   config = function()
     local opts = { noremap = true, silent = true }
 
-    -- Keep cursor centered when scrolling (disabled - conflicts with neoscroll)
-    -- vim.keymap.set('n', '<C-d>', '<C-d>zz', opts)
-    -- vim.keymap.set('n', '<C-u>', '<C-u>zz', opts)
-
     -- Move selected line / block of text in visual mode
     vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", opts)
     vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", opts)
@@ -38,10 +34,6 @@ return {
     vim.keymap.set({ 'n', 'x', 'o' }, 'H', '^', opts)
     vim.keymap.set({ 'n', 'x', 'o' }, 'L', 'g_', opts)
 
-    -- Navigate buffers
-    -- vim.keymap.set('n', '<Right>', ':bnext<CR>', opts)
-    -- vim.keymap.set('n', '<Left>', ':bprevious<CR>', opts)
-
     -- Save and Close buffer
     vim.keymap.set('n', '<leader>w', ':w<CR>:bd<CR>', { noremap = true, silent = true })
 
@@ -54,14 +46,6 @@ return {
     -- Map enter to ciw in normal mode
     vim.keymap.set('n', '<CR>', 'ciw', opts)
     vim.keymap.set('n', '<BS>', 'ci', opts)
-
-    -- Center search results
-    -- vim.keymap.set('n', 'n', 'nzzv', opts)
-    -- vim.keymap.set('n', 'N', 'Nzzv', opts)
-    -- vim.keymap.set('n', '*', '*zzv', opts)
-    -- vim.keymap.set('n', '#', '#zzv', opts)
-    -- vim.keymap.set('n', 'g*', 'g*zz', opts)
-    -- vim.keymap.set('n', 'g#', 'g#zz', opts)
 
     -- Save file
     vim.keymap.set('n', '<C-s>', ':w<CR>', opts)

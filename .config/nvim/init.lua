@@ -174,6 +174,21 @@ vim.opt.linebreak = true -- Wrap at word boundaries, not mid-word (when wrap is 
 vim.opt.breakindent = true -- Maintain indentation on wrapped lines (when wrap is enabled)
 vim.opt.showbreak = '↪ ' -- Visual indicator for wrapped lines (when wrap is enabled)
 
+-- Auto-reload files when changed externally
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
+  pattern = '*',
+  command = 'if mode() != "c" | checktime | endif',
+})
+
+-- Notify when file changes externally
+vim.api.nvim_create_autocmd('FileChangedShellPost', {
+  pattern = '*',
+  callback = function()
+    vim.notify('File changed on disk. Buffer reloaded.', vim.log.levels.WARN)
+  end,
+})
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -192,12 +207,6 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -207,11 +216,9 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+-- Better scrolling with centering for orientation
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down half page and center' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up half page and center' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -351,52 +358,16 @@ require('lazy').setup({
     },
   },
 
-  { -- Smooth scrolling plugin
-    'karb94/neoscroll.nvim',
-    config = function()
-      require('neoscroll').setup {
-        -- All these keys will be mapped to their corresponding default scrolling animation
-        mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb' },
-        hide_cursor = true, -- Hide cursor while scrolling
-        stop_eof = true, -- Stop at <EOF> when scrolling downwards
-        respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
-        cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-        easing_function = nil, -- Default easing function
-        pre_hook = nil, -- Function to run before the scrolling animation starts
-        post_hook = nil, -- Function to run after the scrolling animation ends
-        performance_mode = false, -- Disable "Performance Mode" on all buffers.
-      }
-
-      -- Set custom scroll animation timings (in ms)
-      local t = {}
-      -- Syntax: t[keys] = {function, {function arguments}}
-      t['<C-u>'] = { 'scroll', { '-vim.wo.scroll', 'true', '250' } }
-      t['<C-d>'] = { 'scroll', { 'vim.wo.scroll', 'true', '250' } }
-      t['<C-b>'] = { 'scroll', { '-vim.api.nvim_win_get_height(0)', 'true', '450' } }
-      t['<C-f>'] = { 'scroll', { 'vim.api.nvim_win_get_height(0)', 'true', '450' } }
-      t['<C-y>'] = { 'scroll', { '-3', 'false', '100' } }
-      t['<C-e>'] = { 'scroll', { '3', 'false', '100' } }
-      t['zt'] = { 'zt', { '250' } }
-      t['zz'] = { 'zz', { '250' } }
-      t['zb'] = { 'zb', { '250' } }
-
-      require('neoscroll.config').set_mappings(t)
-    end,
-  },
-
   { -- Claude Code AI assistant integration
     'coder/claudecode.nvim',
     dependencies = { 'folke/snacks.nvim' },
-    opts = {
-      focus_after_send = true,
-      track_selection = true,
-    },
     config = function()
       require('claudecode').setup {
         terminal_cmd = 'claude --dangerously-skip-permissions',
+        focus_after_send = true,
+        track_selection = true,
       }
     end,
-    config = true,
     keys = {
       { '<leader>cc', '<cmd>ClaudeCode<cr>', desc = '[C]laude [C]ode Toggle' },
       { '<leader>cf', '<cmd>ClaudeCodeFocus<cr>', desc = '[C]laude [F]ocus' },
@@ -565,7 +536,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [Gr]ep' })
-      -- vim.keymap.set('n', '<leader>sgi', builtin.git_files, { desc = '[S]earch [Gi]t files' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -613,7 +583,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    lazy = true, -- Ensure it's loaded immediately
+    lazy = false, -- Ensure it's loaded immediately
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -822,7 +792,8 @@ require('lazy').setup({
         },
 
         -- Protobuf language server
-        bufls = {},
+        -- Note: bufls is not available via Mason, install it manually if needed
+        -- bufls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -853,7 +824,8 @@ require('lazy').setup({
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            vim.lsp.config(server_name, server)
+            vim.lsp.enable(server_name)
           end,
           -- Prevent rust_analyzer from being set up by mason-lspconfig
           ['rust_analyzer'] = function() end,
@@ -1027,21 +999,6 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -1057,6 +1014,14 @@ require('lazy').setup({
       auto_install = true,
       highlight = {
         enable = true,
+        -- Disable for very large files
+        disable = function(lang, buf)
+          local max_filesize = 100 * 1024 -- 100 KB
+          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          if ok and stats and stats.size > max_filesize then
+            return true
+          end
+        end,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
